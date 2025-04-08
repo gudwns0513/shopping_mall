@@ -1,15 +1,21 @@
-
 spring:
   config:
     activate:
-      on-profile: test
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/develop?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8
-    username: root
-    password: 1234
+      on-profile: log #yml의 profile 이름 지정
 
   jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
+    properties:
+      hibernate:
+        #show_sql: true # System.out 방식 로그
+        format_sql: true #쿼리 가독성 좋게(한줄X)
+        highlight_sql: true #SQL 키워드 강조
+        use_sql_comments: true #주석으로 SQL 설명 추가해준다
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug # logger 방식 로그
+        orm:
+          jdbc:
+            bind: trace #SQL 로그에 ?값을 보여준다

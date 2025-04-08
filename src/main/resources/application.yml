@@ -1,13 +1,11 @@
 spring:
   config:
-    activate:
-      on-profile: dev
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/develop?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8
-    username: root
-    password: 1234
-
-  jpa:
-    hibernate:
-      ddl-auto: update
+    import: #yml 파일들 import
+      - classpath:/application-dev.yml
+      - classpath:/application-log.yml
+  profiles:
+    active: dev
+    include: log
+#    group:
+#      logging: dev, log #dev의 설정과 log의 설정을 logging이라는 프로필로 묶어놓은 것이다.
+#    active: logging #어떤 프로필의 yml을 사용할 지 정한다.

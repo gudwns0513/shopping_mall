@@ -1,11 +1,14 @@
 spring:
+  config:
+    import: optional:file:.env[.properties] #.env파일 가져오기
+    activate:
+      on-profile: dev #yml의 profile 이름 지정
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/develop?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8
-    username: root
-    password: 1234
+    url: ${DEVELOP_DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
