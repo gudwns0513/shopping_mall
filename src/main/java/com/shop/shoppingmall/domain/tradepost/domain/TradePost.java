@@ -2,6 +2,7 @@ package com.shop.shoppingmall.domain.tradepost.domain;
 
 import com.shop.shoppingmall.domain.category.domain.Category;
 import com.shop.shoppingmall.domain.user.domain.User;
+import com.shop.shoppingmall.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -18,35 +19,31 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Getter
-public class TradePost {
+public class TradePost extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @Column(nullable = false)
     private String title;
 
-    @NotBlank
+    @Column(nullable = false)
     private String description;
 
-    @Min(0)
+    @Column(nullable = false)
     private int price;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private TradePostStatus status;
 
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
-
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private User user;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Category category;
 
 }
