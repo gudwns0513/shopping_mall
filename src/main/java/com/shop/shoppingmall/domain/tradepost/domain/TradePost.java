@@ -29,6 +29,7 @@ public class TradePost extends BaseEntity {
     private String title;
 
     @Column(nullable = false)
+    @Lob
     private String description;
 
     @Column(nullable = false)
@@ -39,7 +40,7 @@ public class TradePost extends BaseEntity {
     private TradePostStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, updatable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)

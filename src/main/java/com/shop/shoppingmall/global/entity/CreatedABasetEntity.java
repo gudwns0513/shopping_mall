@@ -13,6 +13,6 @@ import java.time.LocalDateTime;
 public class CreatedABasetEntity {
 
     @CreatedDate
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 }
