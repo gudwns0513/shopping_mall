@@ -1,4 +1,4 @@
-package com.shop.shoppingmall.domain.chat.entity;
+package com.shop.shoppingmall.domain.category.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,13 +16,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Getter
-public class ChatMessage {
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String content;
+    private String name;
 
-    private LocalDateTime sendedAt;
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 }

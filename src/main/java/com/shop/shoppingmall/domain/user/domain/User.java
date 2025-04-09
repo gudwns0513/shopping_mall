@@ -1,4 +1,4 @@
-package com.shop.shoppingmall.domain.tradepost.entity;
+package com.shop.shoppingmall.domain.user.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,27 +11,23 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Entity
+@Entity(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
-public class TradePost {
+public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
+    private String email;
 
-    private String description;
+    private String password;
 
-    private int price;
-
-    private String status;
+    private String nickname;
 
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
-
 }

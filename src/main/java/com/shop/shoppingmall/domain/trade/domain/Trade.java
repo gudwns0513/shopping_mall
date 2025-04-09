@@ -1,4 +1,4 @@
-package com.shop.shoppingmall.domain.trade.entity;
+package com.shop.shoppingmall.domain.trade.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,5 +22,5 @@ public class Trade {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime tradedAt;
+    private LocalDateTime createdAt;
 }

@@ -1,4 +1,4 @@
-package com.shop.shoppingmall.domain.chat.entity;
+package com.shop.shoppingmall.domain.image.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,11 +16,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Getter
-public class ChatRoom {
+public class Image {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String type;
+
+    private String imageUrl;
 
     private LocalDateTime createdAt;
 }

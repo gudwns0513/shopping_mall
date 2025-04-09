@@ -1,4 +1,4 @@
-package com.shop.shoppingmall.domain.user.entity;
+package com.shop.shoppingmall.domain.chat.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,21 +11,16 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Entity(name = "users")
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
-public class User {
+public class ChatRoom {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String email;
-
-    private String password;
-
-    private String nickname;
 
     private LocalDateTime createdAt;
 }
