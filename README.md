@@ -13,4 +13,3 @@
 - 실시간 채팅
 # ERD
 ![image](https://github.com/user-attachments/assets/3adb2bf6-c957-4d94-ac2f-3cfe80fecc2d)
-
