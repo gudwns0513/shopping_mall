@@ -48,4 +48,10 @@ public class TradePost extends BaseEntity {
     @JoinColumn(nullable = false)
     private Category category;
 
+    public void updateTradePost(String title, String description, Integer price, Category category) {
+        if (title != null) this.title = title;
+        if (description != null) this.description = description;
+        if (price != null) this.price = price;
+        if (category != null) this.category = category;
+    }
 }
