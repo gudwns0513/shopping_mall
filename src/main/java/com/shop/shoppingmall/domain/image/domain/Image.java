@@ -2,22 +2,19 @@ package com.shop.shoppingmall.domain.image.domain;
 
 import com.shop.shoppingmall.domain.tradepost.domain.TradePost;
 import com.shop.shoppingmall.domain.user.domain.User;
-import com.shop.shoppingmall.global.entity.BaseEntity;
-import com.shop.shoppingmall.global.entity.CreatedABasetEntity;
+import com.shop.shoppingmall.global.entity.CreatedAtBaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
-public class Image extends CreatedABasetEntity {
+public class Image extends CreatedAtBaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

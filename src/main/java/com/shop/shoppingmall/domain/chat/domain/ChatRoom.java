@@ -2,21 +2,19 @@ package com.shop.shoppingmall.domain.chat.domain;
 
 import com.shop.shoppingmall.domain.tradepost.domain.TradePost;
 import com.shop.shoppingmall.domain.user.domain.User;
-import com.shop.shoppingmall.global.entity.CreatedABasetEntity;
+import com.shop.shoppingmall.global.entity.CreatedAtBaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
-public class ChatRoom extends CreatedABasetEntity {
+public class ChatRoom extends CreatedAtBaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
