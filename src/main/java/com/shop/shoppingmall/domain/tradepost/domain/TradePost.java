@@ -40,7 +40,8 @@ public class TradePost extends BaseEntity {
     private TradePostStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, updatable = false)
+//    @JoinColumn(nullable = false, updatable = false)
+    @JoinColumn(updatable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
