@@ -17,6 +17,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<CommonResponse<String>> handleIllegalArgumentException(IllegalArgumentException ex) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body(new CommonResponse<>(HttpStatus.NO_CONTENT.value(), null, ex.getMessage()));
+                .body(new CommonResponse<>(HttpStatus.NOT_FOUND.value(), null, ex.getMessage()));
     }
 }
