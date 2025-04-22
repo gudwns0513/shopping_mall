@@ -148,14 +148,13 @@ class TradePostServiceTest {
         Long tradePostId = 1L;
         TradePost tradePost = TradePost.builder()
                 .id(tradePostId)
-                .title("Test Title")
-                .description("Test Description")
+                .title("제목")
+                .description("설명")
                 .price(500)
                 .status(TradePostStatus.AVAILABLE)
                 .category(category)
                 .build();
 
-        // Mocking
         given(tradePostRepository.findById(tradePostId)).willReturn(Optional.of(tradePost));
 
         // when
