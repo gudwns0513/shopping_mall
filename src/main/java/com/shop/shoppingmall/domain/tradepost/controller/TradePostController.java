@@ -1,5 +1,6 @@
 package com.shop.shoppingmall.domain.tradepost.controller;
 
+import com.shop.shoppingmall.domain.tradepost.dto.TradePostDetailResponse;
 import com.shop.shoppingmall.domain.tradepost.dto.TradePostRegisterRequest;
 import com.shop.shoppingmall.domain.tradepost.dto.TradePostSummaryResponse;
 import com.shop.shoppingmall.domain.tradepost.dto.TradePostUpdateRequest;
@@ -47,5 +48,13 @@ public class TradePostController {
         Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
         SliceResponse<TradePostSummaryResponse> tradePostList = tradePostService.getTradePostList(categoryId, pageable);
         return ResponseEntity.ok(tradePostList);
+    }
+
+    //거래 게시물 상세 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<TradePostDetailResponse> getTradePostDetail(@PathVariable Long id) {
+        TradePostDetailResponse tradePostDetail = tradePostService.getTradePostDetail(id);
+        return ResponseEntity.ok(tradePostDetail);
+
     }
 }

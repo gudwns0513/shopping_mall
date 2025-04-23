@@ -1,5 +1,7 @@
 package com.shop.shoppingmall.global.exception;
 
+import com.shop.shoppingmall.global.exception.custom.CategoryNotFoundException;
+import com.shop.shoppingmall.global.exception.custom.TradePostNotFoundException;
 import com.shop.shoppingmall.global.response.CommonResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

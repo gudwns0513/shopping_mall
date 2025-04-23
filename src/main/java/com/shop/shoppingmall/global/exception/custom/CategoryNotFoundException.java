@@ -1,4 +1,4 @@
-package com.shop.shoppingmall.global.exception;
+package com.shop.shoppingmall.global.exception.custom;
 
 public class CategoryNotFoundException extends RuntimeException {
 
