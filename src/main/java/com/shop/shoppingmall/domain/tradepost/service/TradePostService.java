@@ -7,6 +7,8 @@ import com.shop.shoppingmall.domain.tradepost.dto.TradePostRegisterRequest;
 import com.shop.shoppingmall.domain.tradepost.dto.TradePostUpdateRequest;
 import com.shop.shoppingmall.domain.tradepost.map.TradePostMapper;
 import com.shop.shoppingmall.domain.tradepost.repository.TradePostRepository;
+import com.shop.shoppingmall.global.exception.CategoryNotFoundException;
+import com.shop.shoppingmall.global.exception.TradePostNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,7 +27,7 @@ public class TradePostService {
 
     public void registerTradePost(TradePostRegisterRequest requestDto) {
         Category category = categoryRepository.findById(requestDto.getCategoryId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 카테고리가 DB에 존재하지 않습니다."));
+                .orElseThrow(() -> new CategoryNotFoundException(requestDto.getCategoryId()));
 
         TradePost tradePost = tradePostMapper.toEntity(requestDto, category);
         tradePostRepository.save(tradePost);
@@ -33,12 +35,12 @@ public class TradePostService {
 
     public void updateTradePost(Long id, TradePostUpdateRequest requestDto) {
         TradePost tradePost = tradePostRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("수정하려는 거래 게시물이 존재하지 않습니다."));
+                .orElseThrow(() -> new TradePostNotFoundException(id));
 
         Category category = null;
         if(requestDto.getCategoryId() != null) {
             category = categoryRepository.findById(requestDto.getCategoryId())
-                    .orElseThrow(() -> new IllegalArgumentException("해당 카테고리가 DB에 존재하지 않습니다."));
+                    .orElseThrow(() -> new CategoryNotFoundException(requestDto.getCategoryId()));
         }
 
         tradePost.updateTradePost(
@@ -51,7 +53,7 @@ public class TradePostService {
 
     public void deleteTradePost(Long id) {
         TradePost tradePost = tradePostRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시물은 이미 존재하지 않습니다."));
+                .orElseThrow(() -> new TradePostNotFoundException(id));
         tradePostRepository.delete(tradePost);
     }
 }

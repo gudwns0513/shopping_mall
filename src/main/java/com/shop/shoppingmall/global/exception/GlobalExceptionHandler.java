@@ -13,8 +13,15 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<CommonResponse<String>> handleIllegalArgumentException(IllegalArgumentException ex) {
+    @ExceptionHandler(TradePostNotFoundException.class)
+    public ResponseEntity<CommonResponse<String>> handleTradePostNotFoundException(TradePostNotFoundException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new CommonResponse<>(HttpStatus.NOT_FOUND.value(), null, ex.getMessage()));
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<CommonResponse<String>> handleCategoryNotFoundException(CategoryNotFoundException ex) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(new CommonResponse<>(HttpStatus.NOT_FOUND.value(), null, ex.getMessage()));
