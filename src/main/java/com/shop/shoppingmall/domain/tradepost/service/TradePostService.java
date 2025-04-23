@@ -4,15 +4,20 @@ import com.shop.shoppingmall.domain.category.domain.Category;
 import com.shop.shoppingmall.domain.category.repository.CategoryRepository;
 import com.shop.shoppingmall.domain.tradepost.domain.TradePost;
 import com.shop.shoppingmall.domain.tradepost.dto.TradePostRegisterRequest;
+import com.shop.shoppingmall.domain.tradepost.dto.TradePostSummaryResponse;
 import com.shop.shoppingmall.domain.tradepost.dto.TradePostUpdateRequest;
 import com.shop.shoppingmall.domain.tradepost.map.TradePostMapper;
 import com.shop.shoppingmall.domain.tradepost.repository.TradePostRepository;
 import com.shop.shoppingmall.global.exception.CategoryNotFoundException;
 import com.shop.shoppingmall.global.exception.TradePostNotFoundException;
-import jakarta.validation.Valid;
+import com.shop.shoppingmall.global.response.SliceResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -55,5 +60,20 @@ public class TradePostService {
         TradePost tradePost = tradePostRepository.findById(id)
                 .orElseThrow(() -> new TradePostNotFoundException(id));
         tradePostRepository.delete(tradePost);
+    }
+
+    public SliceResponse<TradePostSummaryResponse> getTradePostList(Long categoryId, Pageable pageable) {
+        Slice<TradePost> tradePostSlice = tradePostRepository.findTradePostByCategoryId(categoryId, pageable);
+
+        List<TradePostSummaryResponse> content = tradePostSlice.getContent().stream()
+                .map(tradePostMapper::toDto)
+                .toList();
+
+        return SliceResponse.<TradePostSummaryResponse>builder()
+                .content(content)
+                .currentPage(tradePostSlice.getNumber())
+                .pageSize(tradePostSlice.getNumberOfElements())
+                .hasNextPage(tradePostSlice.hasNext())
+                .build();
     }
 }

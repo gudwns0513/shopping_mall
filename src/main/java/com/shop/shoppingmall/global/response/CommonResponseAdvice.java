@@ -24,6 +24,10 @@ public class CommonResponseAdvice implements ResponseBodyAdvice<Object> {
         if(body instanceof CommonResponse) {
             return body;
         }
-        return new CommonResponse<>(HttpStatus.OK.value(), body, "Success");
+        return CommonResponse.builder()
+                .code(HttpStatus.OK.value())
+                .data(body)
+                .message("Success")
+                .build();
     }
 }
