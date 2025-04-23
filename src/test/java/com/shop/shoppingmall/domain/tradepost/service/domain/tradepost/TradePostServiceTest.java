@@ -4,12 +4,15 @@ import com.shop.shoppingmall.domain.category.domain.Category;
 import com.shop.shoppingmall.domain.category.repository.CategoryRepository;
 import com.shop.shoppingmall.domain.tradepost.domain.TradePost;
 import com.shop.shoppingmall.domain.tradepost.domain.TradePostStatus;
+import com.shop.shoppingmall.domain.tradepost.dto.TradePostDetailResponse;
 import com.shop.shoppingmall.domain.tradepost.dto.TradePostRegisterRequest;
+import com.shop.shoppingmall.domain.tradepost.dto.TradePostSummaryResponse;
 import com.shop.shoppingmall.domain.tradepost.dto.TradePostUpdateRequest;
 import com.shop.shoppingmall.domain.tradepost.map.TradePostMapper;
 import com.shop.shoppingmall.domain.tradepost.repository.TradePostRepository;
 import com.shop.shoppingmall.domain.tradepost.service.TradePostService;
-import org.assertj.core.api.Assertions;
+import com.shop.shoppingmall.global.exception.custom.CategoryNotFoundException;
+import com.shop.shoppingmall.global.response.SliceResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +20,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -96,8 +101,8 @@ class TradePostServiceTest {
 
         // when & then
         assertThatThrownBy(() -> tradePostService.registerTradePost(requestDto))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("해당 카테고리가 DB에 존재하지 않습니다.");
+                .isInstanceOf(CategoryNotFoundException.class)
+                .hasMessage("해당 Category가 존재하지 않습니다. (categoryId: " + 99 + ")");
     }
 
     @Test
@@ -162,5 +167,89 @@ class TradePostServiceTest {
 
         // then
         then(tradePostRepository).should(times(1)).delete(tradePost);
+    }
+
+    @Test
+    @DisplayName("거래 게시물 목록 조회 - 정상")
+    void getTradePostList() {
+        // given
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        TradePost tradePost = TradePost.builder()
+                .id(1L)
+                .title("제목")
+                .description("설명")
+                .price(10000)
+                .status(TradePostStatus.AVAILABLE)
+                .category(category)
+                .build();
+
+        // TradePost가 포함된 Slice 객체를 반환하도록 설정
+        Slice<TradePost> tradePostSlice = new SliceImpl<>(List.of(tradePost), pageable, false);
+
+        given(tradePostRepository.findTradePostByCategoryId(category.getId(), pageable)).willReturn(tradePostSlice);
+        given(tradePostMapper.toSummaryResponse(tradePost)).willReturn(
+                TradePostSummaryResponse.builder()
+                        .tradePostId(tradePost.getId())
+                        .title(tradePost.getTitle())
+                        .price(tradePost.getPrice())
+                        .status(tradePost.getStatus())
+                        .createdAt(tradePost.getCreatedAt())
+                        .build()
+        );
+
+        // when
+        SliceResponse<TradePostSummaryResponse> response = tradePostService.getTradePostList(category.getId(), pageable);
+
+        // then
+        assertThat(response).isNotNull();
+        assertThat(response.getContent()).hasSize(1); // 반환된 게시물 개수 확인
+        assertThat(response.getContent().get(0).getTradePostId()).isEqualTo(tradePost.getId()); // 게시물 ID 확인
+        assertThat(response.getContent().get(0).getTitle()).isEqualTo(tradePost.getTitle()); // 제목 확인
+        assertThat(response.getContent().get(0).getPrice()).isEqualTo(tradePost.getPrice()); // 가격 확인
+        assertThat(response.getContent().get(0).getStatus()).isEqualTo(tradePost.getStatus()); // 상태 확인
+        assertThat(response.getContent().get(0).getCreatedAt()).isEqualTo(tradePost.getCreatedAt()); // 생성일 확인
+    }
+
+    @Test
+    @DisplayName("거래 게시물 상세 조회 - 정상")
+    void getTradePostDetail() {
+
+        //given
+        TradePost tradePost = TradePost.builder()
+                .id(1L)
+                .title("제목")
+                .description("설명")
+                .price(10000)
+                .status(TradePostStatus.AVAILABLE)
+                .category(category)
+                .build();
+
+        given(tradePostRepository.findById(tradePost.getId()))
+                .willReturn(Optional.of(tradePost));
+        given(tradePostMapper.toDetailResponse(tradePost)).willReturn(
+                TradePostDetailResponse.builder()
+                        .tradePostId(tradePost.getId())
+                        .title(tradePost.getTitle())
+                        .description(tradePost.getDescription())
+                        .price(tradePost.getPrice())
+                        .status(tradePost.getStatus())
+                        .createdAt(tradePost.getCreatedAt())
+                        .updatedAt(tradePost.getUpdatedAt())
+                        .build()
+        );
+
+        //when
+        TradePostDetailResponse response = tradePostService.getTradePostDetail(tradePost.getId());
+
+        //then
+        assertThat(response).isNotNull();
+        assertThat(response.getTradePostId()).isEqualTo(tradePost.getId());
+        assertThat(response.getTitle()).isEqualTo(tradePost.getTitle());
+        assertThat(response.getDescription()).isEqualTo(tradePost.getDescription());
+        assertThat(response.getPrice()).isEqualTo(tradePost.getPrice());
+        assertThat(response.getStatus()).isEqualTo(tradePost.getStatus());
+        assertThat(response.getCreatedAt()).isEqualTo(tradePost.getCreatedAt());
+        assertThat(response.getUpdatedAt()).isEqualTo(tradePost.getUpdatedAt());
     }
 }
