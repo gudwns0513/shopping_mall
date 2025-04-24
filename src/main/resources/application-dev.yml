@@ -1,8 +1,6 @@
 spring:
   config:
     import: optional:file:.env[.properties] #.env파일 가져오기
-    activate:
-      on-profile: dev #yml의 profile 이름 지정
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${DEVELOP_DB_URL}

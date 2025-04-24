@@ -1,8 +1,4 @@
 spring:
-  config:
-    activate:
-      on-profile: log #yml의 profile 이름 지정
-
   jpa:
     properties:
       hibernate:
