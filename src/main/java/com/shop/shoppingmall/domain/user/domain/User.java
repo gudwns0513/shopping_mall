@@ -20,11 +20,8 @@ public class User extends BaseEntity {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String email;
+    private Long kakaoId; // 카카오에서 제공하는 고유 ID
 
-    @Column(nullable = false)
-    private String password;
-
-    @Column(unique = true, nullable = false, length = 50)
+    @Column(nullable = false, length = 50)
     private String nickname;
 }

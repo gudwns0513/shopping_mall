@@ -15,9 +15,9 @@ spring:
           kakao:
             client-id: ${KAKAO_CLIENT_ID}
             client-secret: ${KAKAO_CLIENT_SECRET}
-            client-authentication-method: client_secret_post
-            redirect-uri: https://localhost:8080/login/oauth2/code/kakao
-            authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_post #클라이언트 인증 방식(body에 client-id와 client-secret넣어야함)
+            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+            authorization-grant-type: authorization_code #사용자가 로그인하고 클라이언트가 인증코드를 받아서 서버의 토큰과 교환하는 방식
             client-name: kakao
             scope:
               - profile_nickname
