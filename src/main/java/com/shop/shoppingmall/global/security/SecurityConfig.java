@@ -1,14 +1,13 @@
 package com.shop.shoppingmall.global.security;
 
 import com.shop.shoppingmall.domain.user.oauth.OAuth2UserService;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -19,14 +18,18 @@ import java.nio.charset.StandardCharsets;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
     private final OAuth2UserService oAuth2UserService;
+
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화 (람다식 적용)
+                .exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/trade-post").authenticated() // 여기를 인증 필요하도록 설정
+                        .requestMatchers("/api/**").authenticated() // 여기를 인증 필요하도록 설정
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
