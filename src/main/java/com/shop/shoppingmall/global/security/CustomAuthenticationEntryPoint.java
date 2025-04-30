@@ -34,10 +34,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                 .message("로그인 후 이용해주세요.")
                 .build();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String responseBody = objectMapper.writeValueAsString(commonResponse);
-
-        response.getWriter().write(responseBody);
+        response.getWriter().write(new ObjectMapper().writeValueAsString(commonResponse));
     }
 
 }
