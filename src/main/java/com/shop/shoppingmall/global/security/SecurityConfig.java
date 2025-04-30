@@ -26,12 +26,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // CSRF 비활성화 (람다식 적용)
+                .csrf(AbstractHttpConfigurer::disable) // CSRF 비활성화
                 .exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/**").authenticated() // 여기를 인증 필요하도록 설정
+                        .requestMatchers("/api/**").authenticated() // 인증이 필요한 API
                         .anyRequest().permitAll()
                 )
+
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(successHandler()) // 로그인 성공 처리
                         .userInfoEndpoint(userInfo -> userInfo
@@ -42,23 +43,28 @@ public class SecurityConfig {
         return http.build();
     }
 
+
     @Bean
     public AuthenticationSuccessHandler successHandler() {
         return ((request, response, authentication) -> {
             DefaultOAuth2User defaultOAuth2User = (DefaultOAuth2User) authentication.getPrincipal();
 
-            // 로그 확인
+            //사용자 정보 가져오기
             String userId = defaultOAuth2User.getAttributes().get("id").toString();
+            String kakaoId = defaultOAuth2User.getAttributes().get("kakaoId").toString();
             String nickname = defaultOAuth2User.getAttributes().get("nickname").toString();
 
-            System.out.println("인증 성공 - USER_ID: " + userId + ", NICKNAME: " + nickname);
-
+            //로그인 성공 시 내려줄 JSON
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
             String body = """
-        {"id":"%s", "nickname":"%s"}
-        """.formatted(userId, nickname);
+                            {
+                                "id":"%s",
+                                "kakaoId":"%s",
+                                "nickname":"%s"
+                            }
+                          """.formatted(userId, kakaoId, nickname);
 
             PrintWriter writer = response.getWriter();
             writer.println(body);

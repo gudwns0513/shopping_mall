@@ -30,14 +30,13 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
 
         if (!"kakao".equals(registrationId)) {
-            throw new OAuth2AuthenticationException("Only Kakao login is supported.");
+            throw new OAuth2AuthenticationException("카카오 로그인으로 진행하세요");
         }
 
-        // Kakao 응답 구조는 kakao_account와 properties 안에 정보가 있어
         Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
         Map<String, Object> properties = (Map<String, Object>) attributes.get("properties");
 
-        Long kakaoId = ((Number) attributes.get("id")).longValue();
+        Long kakaoId = (Long) attributes.get("id");
         String nickname = (String) properties.get("nickname");
 
         System.out.println(kakaoId);
@@ -54,7 +53,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
         return new DefaultOAuth2User(
                 List.of(new SimpleGrantedAuthority("ROLE_USER")),
-                Map.of("id", user.getId(), "nickname", user.getNickname()), // 나중에 successHandler에서 이걸 활용
+                Map.of("id", user.getId(), "kakaoId", user.getKakaoId(), "nickname", user.getNickname()), // 나중에 successHandler에서 이걸 활용
                 "id"
         );
     }
