@@ -1,8 +1,4 @@
 spring:
-  config:
-    activate:
-      on-profile: log #yml의 profile 이름 지정
-
   jpa:
     properties:
       hibernate:
@@ -19,3 +15,7 @@ logging:
         orm:
           jdbc:
             bind: trace #SQL 로그에 ?값을 보여준다
+
+      springframework.security: DEBUG
+      org.springframework.web: DEBUG
+
