@@ -14,6 +14,8 @@ public class TradePostDetailResponse {
 
     private Long tradePostId;
 
+    private Long userId;
+
     private String title;
 
     private String description;

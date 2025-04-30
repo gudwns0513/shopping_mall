@@ -39,9 +39,6 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         Long kakaoId = (Long) attributes.get("id");
         String nickname = (String) properties.get("nickname");
 
-        System.out.println(kakaoId);
-        System.out.println(nickname);
-
         // 사용자 저장 또는 조회
         User user = userRepository.findByKakaoId(kakaoId)
                 .orElseGet(() -> userRepository.save(
