@@ -18,6 +18,7 @@ public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
 
+    //채팅방 조회(없다면 생성해서 조회)
     @GetMapping("/{tradePostId}")
     public ResponseEntity<ChatRoomDetailResponse> getOrCreateChatRoom(
             @PathVariable Long tradePostId,
@@ -25,10 +26,7 @@ public class ChatRoomController {
 
         Long buyerId = (Long)oAuth2User.getAttributes().get("id");
 
-        // 채팅방이 있는지 확인
         ChatRoomDetailResponse response = chatRoomService.findOrCreateChatRoom(tradePostId, buyerId);
-
-        // 채팅방 ID 반환
         return ResponseEntity.ok(response);
     }
 }

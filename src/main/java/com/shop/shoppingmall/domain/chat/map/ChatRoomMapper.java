@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ChatRoomMapper {
 
+    //ChatRoom 엔티티 생성
     public ChatRoom toEntity(TradePost tradePost, User buyer) {
         return ChatRoom.builder()
                 .seller(tradePost.getUser())
@@ -17,12 +18,14 @@ public class ChatRoomMapper {
                 .build();
     }
 
+    //DTO 변환
     public ChatRoomDetailResponse toDetailResponse(ChatRoom chatRoom) {
         return ChatRoomDetailResponse.builder()
                 .chatRoomId(chatRoom.getId())
                 .buyerId(chatRoom.getBuyer().getId())
                 .sellerId(chatRoom.getSeller().getId())
                 .tradePostId(chatRoom.getTradePost().getId())
+                .createdAt(chatRoom.getCreatedAt())
                 .build();
     }
 }
