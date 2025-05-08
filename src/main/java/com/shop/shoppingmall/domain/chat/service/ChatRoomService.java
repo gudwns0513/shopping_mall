@@ -35,7 +35,7 @@ public class ChatRoomService {
         User buyer = userRepository.findById(buyerId)
                 .orElseThrow(() -> new UserNotFoundException(buyerId));
 
-        ChatRoom chatRoom = chatRoomRepository.findByTradePostId(tradePostId)
+        ChatRoom chatRoom = chatRoomRepository.findByTradePostIdAndBuyerId(tradePostId, buyerId)
                 .orElseGet(() -> chatRoomRepository.save(
                         chatRoomMapper.toEntity(tradePost, buyer))
                 );
