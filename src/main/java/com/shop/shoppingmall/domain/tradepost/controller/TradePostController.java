@@ -5,6 +5,7 @@ import com.shop.shoppingmall.domain.tradepost.dto.TradePostRegisterRequest;
 import com.shop.shoppingmall.domain.tradepost.dto.TradePostSummaryResponse;
 import com.shop.shoppingmall.domain.tradepost.dto.TradePostUpdateRequest;
 import com.shop.shoppingmall.domain.tradepost.service.TradePostService;
+import com.shop.shoppingmall.domain.user.domain.User;
 import com.shop.shoppingmall.global.response.SliceResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,20 +31,12 @@ public class TradePostController {
     @PostMapping
     public ResponseEntity<Void> registerTradePost(
             @Valid @RequestBody TradePostRegisterRequest tradePostRegisterRequest,
-            @AuthenticationPrincipal DefaultOAuth2User user) {
+            @AuthenticationPrincipal OAuth2User oAuth2User) {
 
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        Long userId = user.getAttribute("id");
-
-        // 서비스에 userId 넘기기
-        tradePostService.registerTradePost(tradePostRegisterRequest); // ← 서비스도 맞춰줘야 함
+        Long userId = (Long)oAuth2User.getAttributes().get("id");
+        tradePostService.registerTradePost(tradePostRegisterRequest, userId);
         return ResponseEntity.ok().build();
     }
-
-
 
     //거래 게시물 수정
     @PatchMapping("/{id}")

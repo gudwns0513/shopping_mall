@@ -39,9 +39,6 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         Long kakaoId = (Long) attributes.get("id");
         String nickname = (String) properties.get("nickname");
 
-        System.out.println(kakaoId);
-        System.out.println(nickname);
-
         // 사용자 저장 또는 조회
         User user = userRepository.findByKakaoId(kakaoId)
                 .orElseGet(() -> userRepository.save(
@@ -51,6 +48,8 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
                                 .build()
                 ));
 
+
+        //식별키를 id로 지정
         return new DefaultOAuth2User(
                 List.of(new SimpleGrantedAuthority("ROLE_USER")),
                 Map.of("id", user.getId(), "kakaoId", user.getKakaoId(), "nickname", user.getNickname()), // 나중에 successHandler에서 이걸 활용

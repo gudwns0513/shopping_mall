@@ -24,4 +24,8 @@ public class User extends BaseEntity {
 
     @Column(nullable = false, length = 50)
     private String nickname;
+
+    private String imagePath;
+
+    private String jsessionId;
 }

@@ -9,8 +9,11 @@ import com.shop.shoppingmall.domain.tradepost.dto.TradePostSummaryResponse;
 import com.shop.shoppingmall.domain.tradepost.dto.TradePostUpdateRequest;
 import com.shop.shoppingmall.domain.tradepost.map.TradePostMapper;
 import com.shop.shoppingmall.domain.tradepost.repository.TradePostRepository;
+import com.shop.shoppingmall.domain.user.domain.User;
+import com.shop.shoppingmall.domain.user.repository.UserRepository;
 import com.shop.shoppingmall.global.exception.custom.CategoryNotFoundException;
 import com.shop.shoppingmall.global.exception.custom.TradePostNotFoundException;
+import com.shop.shoppingmall.global.exception.custom.UserNotFoundException;
 import com.shop.shoppingmall.global.response.SliceResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -29,13 +32,18 @@ public class TradePostService {
 
     private final CategoryRepository categoryRepository;
 
+    private final UserRepository userRepository;
+
     private final TradePostMapper tradePostMapper;
 
-    public void registerTradePost(TradePostRegisterRequest requestDto) {
+    public void registerTradePost(TradePostRegisterRequest requestDto, Long userId) {
         Category category = categoryRepository.findById(requestDto.getCategoryId())
                 .orElseThrow(() -> new CategoryNotFoundException(requestDto.getCategoryId()));
 
-        TradePost tradePost = tradePostMapper.toEntity(requestDto, category);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        TradePost tradePost = tradePostMapper.toEntity(requestDto, category, user);
         tradePostRepository.save(tradePost);
     }
 

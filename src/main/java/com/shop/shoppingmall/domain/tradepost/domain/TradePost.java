@@ -35,13 +35,14 @@ public class TradePost extends BaseEntity {
     @Column(nullable = false)
     private int price;
 
+    private String imagePath;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TradePostStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(nullable = false, updatable = false)
-    @JoinColumn(updatable = false)
+    @JoinColumn(nullable = false, updatable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)

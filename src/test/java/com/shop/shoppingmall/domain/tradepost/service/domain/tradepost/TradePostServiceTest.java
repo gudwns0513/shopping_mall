@@ -74,11 +74,11 @@ class TradePostServiceTest {
 
         given(categoryRepository.findById(requestDto.getCategoryId()))
                 .willReturn(Optional.of(category));
-        given(tradePostMapper.toEntity(requestDto, category))
+        given(tradePostMapper.toEntity(requestDto, category, user))
                 .willReturn(tradePost);
 
         // when
-        tradePostService.registerTradePost(requestDto);
+        tradePostService.registerTradePost(requestDto, userId);
 
         // then
         then(tradePostRepository).should(times(1)).save(tradePost);
@@ -100,7 +100,7 @@ class TradePostServiceTest {
                 .willReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> tradePostService.registerTradePost(requestDto))
+        assertThatThrownBy(() -> tradePostService.registerTradePost(requestDto, userId))
                 .isInstanceOf(CategoryNotFoundException.class)
                 .hasMessage("해당 Category가 존재하지 않습니다. (categoryId: " + 99 + ")");
     }

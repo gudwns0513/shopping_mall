@@ -14,6 +14,8 @@ public class TradePostSummaryResponse {
 
     private Long tradePostId;
 
+    private Long userId;
+
     private String title;
 
     private int price;

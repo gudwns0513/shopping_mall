@@ -6,24 +6,27 @@ import com.shop.shoppingmall.domain.tradepost.domain.TradePostStatus;
 import com.shop.shoppingmall.domain.tradepost.dto.TradePostDetailResponse;
 import com.shop.shoppingmall.domain.tradepost.dto.TradePostRegisterRequest;
 import com.shop.shoppingmall.domain.tradepost.dto.TradePostSummaryResponse;
+import com.shop.shoppingmall.domain.user.domain.User;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TradePostMapper {
 
-    public TradePost toEntity(TradePostRegisterRequest dto, Category category) {
+    public TradePost toEntity(TradePostRegisterRequest dto, Category category, User user) {
         return TradePost.builder()
                 .title(dto.getTitle())
                 .description(dto.getDescription())
                 .price(dto.getPrice())
                 .status(TradePostStatus.AVAILABLE)
                 .category(category)
+                .user(user)
                 .build();
     }
 
     public TradePostSummaryResponse toSummaryResponse(TradePost tradePost) {
         return TradePostSummaryResponse.builder()
                 .tradePostId(tradePost.getId())
+                .userId(tradePost.getUser().getId())
                 .title(tradePost.getTitle())
                 .price(tradePost.getPrice())
                 .status(tradePost.getStatus())
@@ -34,6 +37,7 @@ public class TradePostMapper {
     public TradePostDetailResponse toDetailResponse(TradePost tradePost) {
         return TradePostDetailResponse.builder()
                 .tradePostId(tradePost.getId())
+                .userId(tradePost.getUser().getId())
                 .title(tradePost.getTitle())
                 .description(tradePost.getDescription())
                 .price(tradePost.getPrice())
