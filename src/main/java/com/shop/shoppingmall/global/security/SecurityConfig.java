@@ -3,6 +3,7 @@ package com.shop.shoppingmall.global.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shop.shoppingmall.domain.user.oauth.OAuth2UserService;
 import com.shop.shoppingmall.global.response.CommonResponse;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -96,6 +97,7 @@ public class SecurityConfig {
             writer.flush();
         });
     }
+
 
 
 
