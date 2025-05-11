@@ -14,6 +14,7 @@ import com.shop.shoppingmall.domain.tradepost.repository.TradePostRepository;
 import com.shop.shoppingmall.domain.user.domain.User;
 import com.shop.shoppingmall.domain.user.repository.UserRepository;
 import com.shop.shoppingmall.global.exception.custom.CategoryNotFoundException;
+import com.shop.shoppingmall.global.exception.custom.TradePostModificationNotAllowedException;
 import com.shop.shoppingmall.global.exception.custom.TradePostNotFoundException;
 import com.shop.shoppingmall.global.exception.custom.UserNotFoundException;
 import com.shop.shoppingmall.global.response.SliceResponse;
@@ -55,10 +56,20 @@ public class TradePostService {
         TradePost tradePost = tradePostRepository.findById(tradePostId)
                 .orElseThrow(() -> new TradePostNotFoundException(tradePostId));
 
+        //거래 완료된 게시글은 수정 불가
+        if(tradePost.getStatus() == TradePostStatus.COMPLETE) {
+            throw new TradePostModificationNotAllowedException(tradePostId);
+        }
+
         Category category = null;
         if(requestDto.getCategoryId() != null) {
             category = categoryRepository.findById(requestDto.getCategoryId())
                     .orElseThrow(() -> new CategoryNotFoundException(requestDto.getCategoryId()));
+        }
+
+        //거래 완료 시 TradeHistory 저장
+        if(requestDto.getStatus() == TradePostStatus.COMPLETE) {
+            tradeHistoryService.recordTradeCompletion(tradePost);
         }
 
         tradePost.updateTradePost(
@@ -69,10 +80,7 @@ public class TradePostService {
                 category
         );
 
-        //거래 완료 시 TradeHistory 저장
-        if(tradePost.getStatus() == TradePostStatus.COMPLETE) {
-            tradeHistoryService.recordTradeCompletion(tradePost);
-        }
+
     }
 
     public void deleteTradePost(Long tradePostId) {
