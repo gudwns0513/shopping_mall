@@ -1,4 +1,4 @@
-package com.shop.shoppingmall.domain.trade.domain;
+package com.shop.shoppingmall.domain.tradehistory.domain;
 
 import com.shop.shoppingmall.domain.tradepost.domain.TradePost;
 import com.shop.shoppingmall.domain.user.domain.User;
@@ -14,19 +14,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Getter
-public class Trade extends CreatedAtBaseEntity {
+public class TradeHistory extends CreatedAtBaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seller_id", nullable = false, updatable = false)
-    private User seller;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "buyer_id", nullable = false, updatable = false)
-    private User buyer;
+    private User seller;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, updatable = false)
