@@ -91,7 +91,26 @@ public class TradePostService {
 
     public SliceResponse<TradePostSummaryResponse> getTradePostList(Long categoryId, Pageable pageable) {
         Slice<TradePost> tradePostSlice = tradePostRepository.findByCategoryIdAndIsDeletedFalse(categoryId, pageable);
+        return toSliceResponse(tradePostSlice);
+    }
 
+    public TradePostDetailResponse getTradePostDetail(Long tradePostId) {
+        TradePost tradePost = tradePostRepository.findById(tradePostId)
+                .orElseThrow(() -> new TradePostNotFoundException(tradePostId));
+
+        if (tradePost.isDeleted()) {
+            throw new TradePostNotFoundException(tradePostId);
+        }
+
+        return tradePostMapper.toDetailResponse(tradePost);
+    }
+
+    public SliceResponse<TradePostSummaryResponse> getMyTradePostList(Long userId, Pageable pageable) {
+        Slice<TradePost> tradePostSlice = tradePostRepository.findByUserIdAndIsDeletedFalse(userId, pageable);
+        return toSliceResponse(tradePostSlice);
+    }
+
+    private SliceResponse<TradePostSummaryResponse> toSliceResponse(Slice<TradePost> tradePostSlice) {
         List<TradePostSummaryResponse> content = tradePostSlice.getContent().stream()
                 .map(tradePostMapper::toSummaryResponse)
                 .toList();
@@ -102,17 +121,5 @@ public class TradePostService {
                 .pageSize(tradePostSlice.getNumberOfElements())
                 .hasNextPage(tradePostSlice.hasNext())
                 .build();
-    }
-
-    public TradePostDetailResponse getTradePostDetail(Long tradePostId) {
-        TradePost tradePost = tradePostRepository.findById(tradePostId)
-                .orElseThrow(() -> new TradePostNotFoundException(tradePostId));
-
-        //삭제된 TradePost 예외 처리
-        if(tradePost.isDeleted()) {
-            throw new TradePostNotFoundException(tradePostId);
-        }
-
-        return tradePostMapper.toDetailResponse(tradePost);
     }
 }

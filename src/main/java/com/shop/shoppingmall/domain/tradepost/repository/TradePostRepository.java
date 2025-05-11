@@ -9,4 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TradePostRepository extends JpaRepository<TradePost, Long> {
     Slice<TradePost> findByCategoryIdAndIsDeletedFalse(Long categoryId, Pageable pageable);
+
+    Slice<TradePost> findByUserIdAndIsDeletedFalse(Long userId, Pageable pageable);
+
 }
