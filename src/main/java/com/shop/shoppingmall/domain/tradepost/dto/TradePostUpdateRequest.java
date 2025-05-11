@@ -1,5 +1,6 @@
 package com.shop.shoppingmall.domain.tradepost.dto;
 
+import com.shop.shoppingmall.domain.tradepost.domain.TradePostStatus;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -20,4 +21,6 @@ public class TradePostUpdateRequest {
     private Integer price;
 
     private Long categoryId;
+
+    private TradePostStatus status;
 }

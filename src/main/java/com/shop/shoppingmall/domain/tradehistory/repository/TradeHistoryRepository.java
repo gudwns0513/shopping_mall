@@ -1,6 +1,6 @@
-package com.shop.shoppingmall.domain.trade.repository;
+package com.shop.shoppingmall.domain.tradehistory.repository;
 
-import com.shop.shoppingmall.domain.trade.domain.TradeHistory;
+import com.shop.shoppingmall.domain.tradehistory.domain.TradeHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

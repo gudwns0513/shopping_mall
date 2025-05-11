@@ -65,6 +65,5 @@ public class TradePostController {
     public ResponseEntity<TradePostDetailResponse> getTradePostDetail(@PathVariable Long id) {
         TradePostDetailResponse tradePostDetail = tradePostService.getTradePostDetail(id);
         return ResponseEntity.ok(tradePostDetail);
-
     }
 }
