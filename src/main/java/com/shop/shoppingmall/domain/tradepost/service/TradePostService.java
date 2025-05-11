@@ -78,11 +78,11 @@ public class TradePostService {
     public void deleteTradePost(Long tradePostId) {
         TradePost tradePost = tradePostRepository.findById(tradePostId)
                 .orElseThrow(() -> new TradePostNotFoundException(tradePostId));
-        tradePostRepository.delete(tradePost);
+        tradePost.delete(); //논리 삭제
     }
 
     public SliceResponse<TradePostSummaryResponse> getTradePostList(Long categoryId, Pageable pageable) {
-        Slice<TradePost> tradePostSlice = tradePostRepository.findTradePostByCategoryId(categoryId, pageable);
+        Slice<TradePost> tradePostSlice = tradePostRepository.findByCategoryIdAndIsDeletedFalse(categoryId, pageable);
 
         List<TradePostSummaryResponse> content = tradePostSlice.getContent().stream()
                 .map(tradePostMapper::toSummaryResponse)
@@ -99,6 +99,11 @@ public class TradePostService {
     public TradePostDetailResponse getTradePostDetail(Long tradePostId) {
         TradePost tradePost = tradePostRepository.findById(tradePostId)
                 .orElseThrow(() -> new TradePostNotFoundException(tradePostId));
+
+        //삭제된 TradePost 예외 처리
+        if(tradePost.isDeleted()) {
+            throw new TradePostNotFoundException(tradePostId);
+        }
 
         return tradePostMapper.toDetailResponse(tradePost);
     }
