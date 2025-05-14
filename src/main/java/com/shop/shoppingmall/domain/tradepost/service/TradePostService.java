@@ -2,7 +2,9 @@ package com.shop.shoppingmall.domain.tradepost.service;
 
 import com.shop.shoppingmall.domain.category.domain.Category;
 import com.shop.shoppingmall.domain.category.repository.CategoryRepository;
+import com.shop.shoppingmall.domain.tradehistory.service.TradeHistoryService;
 import com.shop.shoppingmall.domain.tradepost.domain.TradePost;
+import com.shop.shoppingmall.domain.tradepost.domain.TradePostStatus;
 import com.shop.shoppingmall.domain.tradepost.dto.TradePostDetailResponse;
 import com.shop.shoppingmall.domain.tradepost.dto.TradePostRegisterRequest;
 import com.shop.shoppingmall.domain.tradepost.dto.TradePostSummaryResponse;
@@ -12,6 +14,7 @@ import com.shop.shoppingmall.domain.tradepost.repository.TradePostRepository;
 import com.shop.shoppingmall.domain.user.domain.User;
 import com.shop.shoppingmall.domain.user.repository.UserRepository;
 import com.shop.shoppingmall.global.exception.custom.CategoryNotFoundException;
+import com.shop.shoppingmall.global.exception.custom.TradePostModificationNotAllowedException;
 import com.shop.shoppingmall.global.exception.custom.TradePostNotFoundException;
 import com.shop.shoppingmall.global.exception.custom.UserNotFoundException;
 import com.shop.shoppingmall.global.response.SliceResponse;
@@ -36,6 +39,8 @@ public class TradePostService {
 
     private final TradePostMapper tradePostMapper;
 
+    private final TradeHistoryService tradeHistoryService;
+
     public void registerTradePost(TradePostRegisterRequest requestDto, Long userId) {
         Category category = categoryRepository.findById(requestDto.getCategoryId())
                 .orElseThrow(() -> new CategoryNotFoundException(requestDto.getCategoryId()));
@@ -47,9 +52,14 @@ public class TradePostService {
         tradePostRepository.save(tradePost);
     }
 
-    public void updateTradePost(Long id, TradePostUpdateRequest requestDto) {
-        TradePost tradePost = tradePostRepository.findById(id)
-                .orElseThrow(() -> new TradePostNotFoundException(id));
+    public void updateTradePost(Long tradePostId, TradePostUpdateRequest requestDto) {
+        TradePost tradePost = tradePostRepository.findById(tradePostId)
+                .orElseThrow(() -> new TradePostNotFoundException(tradePostId));
+
+        //거래 완료된 게시글은 수정 불가
+        if(tradePost.getStatus() == TradePostStatus.COMPLETE) {
+            throw new TradePostModificationNotAllowedException(tradePostId);
+        }
 
         Category category = null;
         if(requestDto.getCategoryId() != null) {
@@ -57,23 +67,50 @@ public class TradePostService {
                     .orElseThrow(() -> new CategoryNotFoundException(requestDto.getCategoryId()));
         }
 
+        //거래 완료 시 TradeHistory 저장
+        if(requestDto.getStatus() == TradePostStatus.COMPLETE) {
+            tradeHistoryService.recordTradeCompletion(tradePost);
+        }
+
         tradePost.updateTradePost(
                 requestDto.getTitle(),
                 requestDto.getDescription(),
                 requestDto.getPrice(),
+                requestDto.getStatus(),
                 category
         );
+
+
     }
 
-    public void deleteTradePost(Long id) {
-        TradePost tradePost = tradePostRepository.findById(id)
-                .orElseThrow(() -> new TradePostNotFoundException(id));
-        tradePostRepository.delete(tradePost);
+    public void deleteTradePost(Long tradePostId) {
+        TradePost tradePost = tradePostRepository.findById(tradePostId)
+                .orElseThrow(() -> new TradePostNotFoundException(tradePostId));
+        tradePost.delete(); //논리 삭제
     }
 
     public SliceResponse<TradePostSummaryResponse> getTradePostList(Long categoryId, Pageable pageable) {
-        Slice<TradePost> tradePostSlice = tradePostRepository.findTradePostByCategoryId(categoryId, pageable);
+        Slice<TradePost> tradePostSlice = tradePostRepository.findByCategoryIdAndIsDeletedFalse(categoryId, pageable);
+        return toSliceResponse(tradePostSlice);
+    }
 
+    public TradePostDetailResponse getTradePostDetail(Long tradePostId) {
+        TradePost tradePost = tradePostRepository.findById(tradePostId)
+                .orElseThrow(() -> new TradePostNotFoundException(tradePostId));
+
+        if (tradePost.isDeleted()) {
+            throw new TradePostNotFoundException(tradePostId);
+        }
+
+        return tradePostMapper.toDetailResponse(tradePost);
+    }
+
+    public SliceResponse<TradePostSummaryResponse> getMyTradePostList(Long userId, Pageable pageable) {
+        Slice<TradePost> tradePostSlice = tradePostRepository.findByUserIdAndIsDeletedFalse(userId, pageable);
+        return toSliceResponse(tradePostSlice);
+    }
+
+    private SliceResponse<TradePostSummaryResponse> toSliceResponse(Slice<TradePost> tradePostSlice) {
         List<TradePostSummaryResponse> content = tradePostSlice.getContent().stream()
                 .map(tradePostMapper::toSummaryResponse)
                 .toList();
@@ -84,12 +121,5 @@ public class TradePostService {
                 .pageSize(tradePostSlice.getNumberOfElements())
                 .hasNextPage(tradePostSlice.hasNext())
                 .build();
-    }
-
-    public TradePostDetailResponse getTradePostDetail(Long id) {
-        TradePost tradePost = tradePostRepository.findById(id)
-                .orElseThrow(() -> new TradePostNotFoundException(id));
-
-        return tradePostMapper.toDetailResponse(tradePost);
     }
 }

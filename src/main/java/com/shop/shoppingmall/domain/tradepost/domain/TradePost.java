@@ -41,6 +41,9 @@ public class TradePost extends BaseEntity {
     @Column(nullable = false)
     private TradePostStatus status;
 
+    @Column(nullable = false)
+    private boolean isDeleted = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, updatable = false)
     private User user;
@@ -49,10 +52,15 @@ public class TradePost extends BaseEntity {
     @JoinColumn(nullable = false)
     private Category category;
 
-    public void updateTradePost(String title, String description, Integer price, Category category) {
+    public void updateTradePost(String title, String description, Integer price, TradePostStatus status, Category category) {
         if (title != null) this.title = title;
         if (description != null) this.description = description;
         if (price != null) this.price = price;
+        if (status != null) this.status = status;
         if (category != null) this.category = category;
+    }
+
+    public void delete() {
+        this.isDeleted = true;
     }
 }

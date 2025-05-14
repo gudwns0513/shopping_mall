@@ -65,6 +65,15 @@ public class TradePostController {
     public ResponseEntity<TradePostDetailResponse> getTradePostDetail(@PathVariable Long id) {
         TradePostDetailResponse tradePostDetail = tradePostService.getTradePostDetail(id);
         return ResponseEntity.ok(tradePostDetail);
-
     }
+
+    //내 거래 게시물 목록 조회
+    @GetMapping("/my")
+    public ResponseEntity<SliceResponse<TradePostSummaryResponse>> getMyTradePostList(@AuthenticationPrincipal OAuth2User oAuth2User) {
+        Long userId = (Long)oAuth2User.getAttributes().get("id");
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
+        SliceResponse<TradePostSummaryResponse> tradePostList = tradePostService.getMyTradePostList(userId, pageable);
+        return ResponseEntity.ok(tradePostList);
+    }
+
 }

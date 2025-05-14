@@ -1,8 +1,8 @@
 package com.shop.shoppingmall.global.exception;
 
 import com.shop.shoppingmall.global.exception.custom.CategoryNotFoundException;
+import com.shop.shoppingmall.global.exception.custom.TradePostModificationNotAllowedException;
 import com.shop.shoppingmall.global.exception.custom.TradePostNotFoundException;
-import com.shop.shoppingmall.global.exception.custom.UnauthorizedAccessException;
 import com.shop.shoppingmall.global.response.CommonResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +34,19 @@ public class GlobalExceptionHandler {
                 .body(
                         CommonResponse.builder()
                                 .code(HttpStatus.NOT_FOUND.value())
+                                .data(null)
+                                .message(ex.getMessage())
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(TradePostModificationNotAllowedException.class)
+    public ResponseEntity<CommonResponse<Object>> handleTradePostModificationNotAllowedException(TradePostModificationNotAllowedException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(
+                        CommonResponse.builder()
+                                .code(HttpStatus.BAD_REQUEST.value())
                                 .data(null)
                                 .message(ex.getMessage())
                                 .build()
