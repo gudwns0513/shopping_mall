@@ -6,7 +6,7 @@
 - 거래 게시글 등록/수정/삭제
 - 거래 게시글 조회
   - 검색/카테고리/필터링/페이징
-- 거래 내역 확인
+- 완료된 거래 내역 저장
 - 실시간 채팅
 # ERD
 ![image](https://github.com/user-attachments/assets/3adb2bf6-c957-4d94-ac2f-3cfe80fecc2d)
